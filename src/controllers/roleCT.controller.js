@@ -34,7 +34,10 @@ export const createRoleCt = async (req, res) => {
 
 export const getRoleCt = async (req, res) => {
   try {
-    const data = await role.find();
+    // $ne is not equal operater 
+    const data = await role.find({ roleTypeId: { $ne: 1 } });
+    // console.log(data);
+
     res
       .status(200)
       .send({ data: { message: "list get sucessfully" }, result: { data } });
