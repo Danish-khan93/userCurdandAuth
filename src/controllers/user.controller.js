@@ -58,15 +58,33 @@ export const loginUser = async (req, res) => {
         token,
       };
 
-      res
-        .status(200)
-        .send({
-          data: { message: "user is login successfully", result: data },
-        });
+      res.status(200).send({
+        data: { message: "user is login successfully", result: data },
+      });
     } else {
       res.status(401).send({ data: "Invalid email or password" });
     }
   } catch (error) {
     throw new error("error in login ");
+  }
+};
+
+// delete user
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log(id);
+    const findUser = await User.findById(id);
+    console.log(findUser);
+
+    if (findUser) {
+      await User.findOneAndDelete({ _id: findUser?._id });
+      res.status(200).send({ data: "delete successfully" });
+    } else {
+      res.status(409).send({ data: "id not found" });
+    }
+  } catch (error) {
+    throw new error("delete is not work");
   }
 };

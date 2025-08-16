@@ -18,12 +18,12 @@ const userSchema = new Schema(
     role: {
       required: true,
       type: String,
-      enum: ["superAdmin", "admin", "company", "department", "client"],
+      // enum: ["superAdmin", "admin", "company", "department", "client"],
     },
     roleId: {
       required: true,
       type: Number,
-      enum: [1, 2, 3, 4, 5],
+      // enum: [1, 2, 3, 4, 5],
     },
     password: {
       required: "true",

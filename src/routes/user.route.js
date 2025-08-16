@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createUser,
+  deleteUser,
   getAllUser,
   loginUser,
 } from "../controllers/user.controller.js";
@@ -10,7 +11,7 @@ userRoutes.post("/createuser", createUser);
 userRoutes.get("/getalluser", getAllUser);
 userRoutes.get("/getsingleuser/:id", createUser);
 userRoutes.put("/updateuser/:id", createUser);
-userRoutes.delete("/deleteuser/:id", createUser);
+userRoutes.delete("/deleteuser/:id", deleteUser);
 userRoutes.post("/login", loginUser);
 
 export default userRoutes;
