@@ -6,19 +6,49 @@ import {
 } from "../utilies/user.authserivce.js";
 
 // create user with hash password
+// const user = new User();
 export const createUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const hashpass = await hashPassword(password);
+    const { email, password, role, roleId, firstName, lastName } = req.body;
 
-    const user = await User({
-      email,
-      password: hashpass,
-    });
-    user.save();
+    const checkDublicate = await User.findOne({ email: { $eq: email } });
 
-    res.send({ data: "user created successfully" });
-    // await User =
+    if (checkDublicate) {
+      console.log("dublicate");
+
+      res.status(409).send({
+        data: { message: "This email is already exist in record" },
+      });
+    } else {
+      console.log("not dublicate");
+      const hashpass = await hashPassword(password);
+      const user = new User({
+        email,
+        password: hashpass,
+        firstName,
+        lastName,
+        role,
+        roleId,
+      });
+
+      const createdUser = await user.save();
+      if (createdUser) {
+        const resData = {
+          email: createdUser.email,
+          role: createdUser.role,
+          roleId: createdUser.roleId,
+          firstName: createdUser.firstName,
+          lastName: createdUser.lastName,
+        };
+        res.status(200).send({
+          data: { message: "User created Sucessfully", result: resData },
+        });
+      } else {
+        res.status(500).send({
+          data: { message: "Error in create user" },
+        });
+      }
+    }
   } catch (error) {
     throw new error("api not work");
   }
@@ -45,24 +75,30 @@ export const loginUser = async (req, res) => {
 
     const user = await User.findOne({ email: email });
     console.log(user);
+    if (user) {
+      const checkPass = await comparePassword(password, user.password);
+      console.log(checkPass);
+      if (checkPass) {
+        const token = jwtToken({ email, password });
 
-    const checkPass = await comparePassword(password, user.password);
+        const data = {
+          email,
+          // password,
+          token,
+          role: user.role,
+          roleId: user.roleId,
+          id: user._id,
+          fullName: user.firstName + " " + user.lastName,
+        };
 
-    console.log(checkPass);
-    if (checkPass) {
-      const token = jwtToken({ email, password });
-
-      const data = {
-        email,
-        // password,
-        token,
-      };
-
-      res.status(200).send({
-        data: { message: "user is login successfully", result: data },
-      });
+        res.status(200).send({
+          data: { message: "user is login successfully", result: data },
+        });
+      } else {
+        res.status(401).send({ data: "Invalid Password" });
+      }
     } else {
-      res.status(401).send({ data: "Invalid email or password" });
+      res.status(409).send({ data: "Invalid email " });
     }
   } catch (error) {
     throw new error("error in login ");

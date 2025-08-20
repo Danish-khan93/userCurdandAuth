@@ -6,14 +6,20 @@ const userSchema = new Schema(
       required: "true",
       type: String,
       unique: true,
+      // lowercase: true,
+      trim: true,
     },
     firstName: {
       required: "true",
       type: String,
+      // lowercase: true,
+      trim: true,
     },
     lastName: {
       required: "true",
       type: String,
+      // lowercase: true,
+      trim: true,
     },
     role: {
       required: true,
@@ -28,6 +34,7 @@ const userSchema = new Schema(
     password: {
       required: "true",
       type: String,
+      trim: true,
     },
   },
   {
